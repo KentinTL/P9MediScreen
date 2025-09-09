@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails du Patient - Mediscreen</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .details-container { border: 1px solid #ddd; padding: 20px; margin-top: 20px; border-radius: 5px; background-color: #f9f9f9; }
+        .details-container p { line-height: 1.6; }
+        .details-container strong { min-width: 150px; display: inline-block; }
+        .error { color: red; font-weight: bold; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<h1>Détails du Patient</h1>
+
+<div th:if="${patient != null}" class="details-container">
+    <p><strong>Prénom :</strong> <span th:text="${patient.firstName}"></span></p>
+    <p><strong>Nom :</strong> <span th:text="${patient.lastName}"></span></p>
+    <p><strong>Date de Naissance :</strong> <span th:text="${patient.birthdate}"></span></p>
+    <p><strong>Genre :</strong> <span th:text="${patient.gender}"></span></p>
+    <p><strong>Adresse :</strong> <span th:text="${patient.address}"></span></p>
+    <p><strong>Téléphone :</strong> <span th:text="${patient.phoneNumber}"></span></p>
+</div>
+
+<div th:if="${patient == null}">
+    <p class="error">Le patient demandé n'a pas été trouvé.</p>
+</div>
+
+<p style="margin-top: 20px;">
+    <a th:href="@{/patients}">Retour à la liste des patients</a>
+</p>
+
+</body>
+</html>

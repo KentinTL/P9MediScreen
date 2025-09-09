@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Patients - Mediscreen</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; text-align: left; padding: 12px; }
+        thead { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #fafafa; }
+        .no-patients { color: #777; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<h1>Liste des Patients</h1>
+
+<div th:if="${!patients.isEmpty()}">
+    <table>
+        <thead>
+        <tr>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Date de Naissance</th>
+            <th>Genre</th>
+            <th>Adresse</th>
+            <th>Téléphone</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="patient : ${patients}">
+            <td>
+                <a th:href="@{/patients/{id}(id=${patient.id})}" th:text="${patient.firstName}"></a>
+            </td>
+            <td th:text="${patient.lastName}"></td>
+            <td th:text="${patient.birthdate}"></td>
+            <td th:text="${patient.gender}"></td>
+            <td th:text="${patient.address}"></td>
+            <td th:text="${patient.phoneNumber}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:if="${patients.isEmpty()}">
+    <p class="no-patients">Aucun patient trouvé.</p>
+</div>
+
+</body>
+</html>

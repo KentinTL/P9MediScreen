@@ -18,7 +18,7 @@ public class PatientService {
         return patientRepository.findAll();
     }
 
-    public Optional<Patient> getPatientById(String id) {
+    public Optional<Patient> getPatientById(Long id) {
         return patientRepository.findById(id);
     }
 
@@ -26,7 +26,7 @@ public class PatientService {
         return patientRepository.save(patient);
     }
 
-    public Patient updatePatient(String id, Patient patientDetails) {
+    public Patient updatePatient(Long id, Patient patientDetails) {
         Optional<Patient> optionalPatient = patientRepository.findById(id);
 
         if (optionalPatient.isPresent()) {
@@ -43,7 +43,7 @@ public class PatientService {
         }
     }
 
-    public void deletePatient(String id) {
+    public void deletePatient(Long id) {
         if(patientRepository.existsById(id)) {
             patientRepository.deleteById(id);
         }

@@ -1,23 +1,28 @@
 package com.mediscreen.patient_microservice.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import java.time.LocalDate;
-import lombok.Data;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-@Document(collection = "patients") // Indique que c'est un document MongoDB
+import java.time.LocalDate;
+
+@Entity
 public class Patient {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
+
+    private String firstName;
 
     public String getFirstName() {
         return firstName;
@@ -27,6 +32,8 @@ public class Patient {
         this.firstName = firstName;
     }
 
+    private String lastName;
+
     public String getLastName() {
         return lastName;
     }
@@ -34,6 +41,8 @@ public class Patient {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    private LocalDate birthdate;
 
     public LocalDate getBirthdate() {
         return birthdate;
@@ -43,6 +52,8 @@ public class Patient {
         this.birthdate = birthdate;
     }
 
+    private String gender;
+
     public String getGender() {
         return gender;
     }
@@ -50,6 +61,8 @@ public class Patient {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+    private String address;
 
     public String getAddress() {
         return address;
@@ -59,6 +72,8 @@ public class Patient {
         this.address = address;
     }
 
+    private String phoneNumber;
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -67,10 +82,4 @@ public class Patient {
         this.phoneNumber = phoneNumber;
     }
 
-    private String firstName;
-    private String lastName;
-    private LocalDate birthdate;
-    private String gender;
-    private String address;
-    private String phoneNumber;
 }

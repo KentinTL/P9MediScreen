@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="2" author="qthib">
+        <insert tableName="patient">
+            <column name="first_name" value="TestNone"/>
+            <column name="last_name" value="Test"/>
+            <column name="birthdate" value="1966-12-31"/>
+            <column name="gender" value="F"/>
+            <column name="address" value="1 Brookside St"/>
+            <column name="phone_number" value="100-222-3333"/>
+        </insert>
+        <insert tableName="patient">
+            <column name="first_name" value="TestBorderline"/>
+            <column name="last_name" value="Test"/>
+            <column name="birthdate" value="1945-06-24"/>
+            <column name="gender" value="M"/>
+            <column name="address" value="2 High St"/>
+            <column name="phone_number" value="200-333-4444"/>
+        </insert>
+        <insert tableName="patient">
+            <column name="first_name" value="TestInDanger"/>
+            <column name="last_name" value="Test"/>
+            <column name="birthdate" value="2004-06-18"/>
+            <column name="gender" value="M"/>
+            <column name="address" value="3 Club Road"/>
+            <column name="phone_number" value="300-444-5555"/>
+        </insert>
+        <insert tableName="patient">
+            <column name="first_name" value="TestEarlyOnset"/>
+            <column name="last_name" value="Test"/>
+            <column name="birthdate" value="2002-06-28"/>
+            <column name="gender" value="F"/>
+            <column name="address" value="4 Valley Dr"/>
+            <column name="phone_number" value="400-555-6666"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/patient") // <-- AJOUTER CECI
 public class PatientController {
 
     @Autowired
@@ -23,7 +24,7 @@ public class PatientController {
 
     // GET /patients/{id} -> Voir un patient spécifique
     @GetMapping("/patients/{id}")
-    public ResponseEntity<Patient> getPatientById(@PathVariable String id) {
+    public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
         Optional<Patient> patient = patientService.getPatientById(id);
         return patient.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -37,7 +38,7 @@ public class PatientController {
 
     // PUT /patients/{id} -> Mettre à jour un patient
     @PutMapping("/patients/{id}")
-    public ResponseEntity<Patient> updatePatient(@PathVariable String id, @RequestBody Patient patientDetails) {
+    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patientDetails) {
         Patient updatedPatient = patientService.updatePatient(id, patientDetails);
         if (updatedPatient != null) {
             return ResponseEntity.ok(updatedPatient);
@@ -47,7 +48,7 @@ public class PatientController {
     }
 
     @DeleteMapping("/patients/{id}")
-    public ResponseEntity<Void> deletePatient(@PathVariable String id) {
+    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         patientService.deletePatient(id);
         return ResponseEntity.noContent().build();
     }

@@ -16,7 +16,10 @@
 <body>
 
 <h1>Liste des Patients</h1>
-
+<a href="/patients/add"
+   style="display: inline-block; margin-bottom: 20px; padding: 10px 15px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
+    Ajouter un patient
+</a>
 <div th:if="${!patients.isEmpty()}">
     <table>
         <thead>

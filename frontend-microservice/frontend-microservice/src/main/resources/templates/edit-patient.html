@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier le Patient</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-container { max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input { width: 95%; padding: 8px; }
+        .btn { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Modifier les informations du patient</h2>
+    <form action="#" th:action="@{/patients/update/{id}(id=${patient.id})}" th:object="${patient}" method="post">
+        <div class="form-group">
+            <label for="firstName">Prénom :</label>
+            <input type="text" id="firstName" th:field="*{firstName}" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Nom :</label>
+            <input type="text" id="lastName" th:field="*{lastName}" required>
+        </div>
+        <div class="form-group">
+            <label for="birthdate">Date de Naissance :</label>
+            <input type="date" id="birthdate" th:value="${#temporals.format(patient.birthdate, 'yyyy-MM-dd')}"
+                   th:name="birthdate" required>
+        </div>
+        <div class="form-group">
+            <label for="gender">Genre (M/F) :</label>
+            <input type="text" id="gender" th:field="*{gender}" required maxlength="1">
+        </div>
+        <div class="form-group">
+            <label for="address">Adresse :</label>
+            <input type="text" id="address" th:field="*{address}">
+        </div>
+        <div class="form-group">
+            <label for="phoneNumber">Téléphone :</label>
+            <input type="text" id="phoneNumber" th:field="*{phoneNumber}">
+        </div>
+        <button type="submit" class="btn">Mettre à jour</button>
+    </form>
+</div>
+
+</body>
+</html>

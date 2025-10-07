@@ -16,7 +16,7 @@
 
 <div class="form-container">
     <h2>Ajouter un nouveau patient</h2>
-    <form action="#" th:action="@{/patients/add}" th:object="${patient}" method="post">
+    <form th:action="@{/patients/add}" th:object="${patient}" method="post">
         <div class="form-group">
             <label for="firstName">Prénom :</label>
             <input type="text" id="firstName" th:field="*{firstName}" required>
@@ -45,5 +45,8 @@
     </form>
 </div>
 
+<p style="margin-top: 20px;">
+    <a th:href="@{/patients}">Retour à la liste des patients</a>
+</p>
 </body>
 </html>

@@ -1,11 +1,8 @@
 package com.mediscreen.notes_microservice.controller;
 
 import com.mediscreen.notes_microservice.model.Note;
-import com.mediscreen.notes_microservice.repository.NoteRepository;
 import com.mediscreen.notes_microservice.service.NoteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

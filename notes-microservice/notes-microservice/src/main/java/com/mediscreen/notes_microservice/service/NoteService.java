@@ -3,7 +3,6 @@ package com.mediscreen.notes_microservice.service;
 import com.mediscreen.notes_microservice.model.Note;
 import com.mediscreen.notes_microservice.repository.NoteRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

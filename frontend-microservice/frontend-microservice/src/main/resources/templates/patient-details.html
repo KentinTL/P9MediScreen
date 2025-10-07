@@ -5,10 +5,22 @@
     <title>Détails du Patient - Mediscreen</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        .details-container { border: 1px solid #ddd; padding: 20px; margin-top: 20px; border-radius: 5px; background-color: #f9f9f9; }
-        .details-container p { line-height: 1.6; }
+        h1, h2 { color: #333; }
+        .details-container, .notes-container, .add-note-container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .details-container p, .notes-container p { line-height: 1.6; }
         .details-container strong { min-width: 150px; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #eee; }
+        textarea { width: 100%; }
+        button { padding: 8px 12px; margin-top: 5px; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
         .error { color: red; font-weight: bold; }
         a { color: #007bff; text-decoration: none; }
         a:hover { text-decoration: underline; }
@@ -19,8 +31,7 @@
 <h1>Détails du Patient</h1>
 
 <div th:if="${patient != null}">
-    <a th:href="@{/patients/edit/{id}(id=${patient.id})}"
-       style="display: inline-block; margin-bottom: 20px; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+    <a th:href="@{/patients/edit/{id}(id=${patient.id})}" style="display:inline-block;margin-bottom:20px;padding:10px 15px;background-color:#007bff;color:white;text-decoration:none;border-radius:5px;">
         Modifier les informations
     </a>
 </div>
@@ -38,32 +49,39 @@
     <p class="error">Le patient demandé n'a pas été trouvé.</p>
 </div>
 
-<h2 style="margin-top: 40px;">Historique des Notes</h2>
+<h2>Historique des Notes</h2>
 
-<div th:if="${!notes.isEmpty()}">
+<div class="notes-container" th:if="${!notes.isEmpty()}">
     <table>
         <thead>
         <tr>
-            <th>Date</th>
             <th>Note du Praticien</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="note : ${notes}">
-            <td th:text="${#temporals.format(note.date, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:text="${note.content}"></td>
+            <td th:text="${note.note}"></td>
         </tr>
         </tbody>
     </table>
 </div>
 
 <div th:if="${notes.isEmpty()}">
-    <p class="no-patients">Aucune note trouvée pour ce patient.</p>
+    <p>Aucune note trouvée pour ce patient.</p>
+</div>
+
+<h2>Ajouter une nouvelle note</h2>
+<div class="add-note-container">
+    <form th:action="@{/patients/{id}/notes(id=${patient.id})}" th:object="${newNote}" method="post">
+        <textarea th:field="*{note}" rows="4" placeholder="Écrire une note..."></textarea>
+        <button type="submit">Ajouter</button>
+    </form>
 </div>
 
 <p style="margin-top: 20px;">
     <a th:href="@{/patients}">Retour à la liste des patients</a>
 </p>
+
 
 </body>
 </html>

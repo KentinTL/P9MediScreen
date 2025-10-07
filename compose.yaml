@@ -10,5 +10,15 @@ services:
     volumes:
       - patient-db-data:/var/lib/mysql
 
+  notes-db:
+    image: mongo:latest
+    container_name: notes-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - notes-db-data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+
 volumes:
   patient-db-data:
+  notes-db-data:

@@ -24,6 +24,7 @@
         <module>patient-microservice/patient-microservice</module>
         <module>notes-microservice/notes-microservice</module>
         <module>frontend-microservice/frontend-microservice</module>
+        <module>assessment_microservice/assessment_microservice</module>
     </modules>
 
     <dependencyManagement>

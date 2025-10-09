@@ -2,6 +2,10 @@ package com.mediscreen.frontend_microservice.controller;
 
 import com.mediscreen.frontend_microservice.dto.Note;
 import com.mediscreen.frontend_microservice.dto.Patient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,20 +19,24 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Controller
+@RequestMapping("/patients")
 public class PatientController {
 
-    private final String GATEWAY_URL = "http://localhost:8080";
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Value("${gateway.url}")
+    private String gatewayUrl;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @GetMapping("/")
     public String home() {
         return "redirect:/patients";
     }
 
-    @GetMapping("/patients")
+    @GetMapping
     public String showPatientList(Model model) {
         try {
-            Patient[] patients = restTemplate.getForObject(GATEWAY_URL + "/api/patient/patients", Patient[].class);
+            Patient[] patients = restTemplate.getForObject(gatewayUrl + "/api/patient/patients", Patient[].class);
             model.addAttribute("patients", patients != null ? Arrays.asList(patients) : Collections.emptyList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,14 +46,20 @@ public class PatientController {
         return "patient-list";
     }
 
-    @GetMapping("/patients/{id}")
+    @GetMapping("/{id}")
     public String showPatientDetails(@PathVariable("id") int id, Model model) {
         try {
-            Patient patient = restTemplate.getForObject(GATEWAY_URL + "/api/patient/patients/" + id, Patient.class);
+            Patient patient = restTemplate.getForObject(gatewayUrl + "/api/patient/patients/" + id, Patient.class);
             model.addAttribute("patient", patient);
 
-            Note[] notes = restTemplate.getForObject(GATEWAY_URL + "/api/notes?patientId=" + id, Note[].class);
+            Note[] notes = restTemplate.getForObject(gatewayUrl + "/api/notes?patientId=" + id, Note[].class);
             model.addAttribute("notes", notes != null ? Arrays.asList(notes) : Collections.emptyList());
+
+            String assessmentUrl = gatewayUrl + "/assess/patient/" + id;
+            String riskLevel = restTemplate.getForObject(assessmentUrl, String.class);
+            model.addAttribute("riskLevel", riskLevel);
+
+            model.addAttribute("newNote", new Note());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,28 +70,36 @@ public class PatientController {
         return "patient-details";
     }
 
-    @PostMapping("/patients/{id}/notes")
-    public String addNoteToPatient(@PathVariable("id") int id, @ModelAttribute Note newNote) {
-        newNote.setPatientId(id);
+    @PostMapping("/{patientId}/notes")
+    public String addNoteToPatient(@PathVariable("patientId") int patientId, @ModelAttribute Note newNote) {
         try {
-            restTemplate.postForObject(GATEWAY_URL + "/api/notes", newNote, Note.class);
+            String patientUrl = gatewayUrl + "/api/patient/patients/" + patientId;
+            Patient patient = restTemplate.getForObject(patientUrl, Patient.class);
+
+            newNote.setPatientId(patientId);
+            if (patient != null) {
+                newNote.setPatient(patient.getFirstName());
+            }
+
+            restTemplate.postForObject(gatewayUrl + "/api/notes", newNote, Note.class);
+
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/patients/" + id + "?noteError";
+            return "redirect:/patients/" + patientId + "?noteError";
         }
-        return "redirect:/patients/" + id;
+        return "redirect:/patients/" + patientId;
     }
 
-    @GetMapping("/patients/add")
+    @GetMapping("/add")
     public String showAddPatientForm(Model model) {
         model.addAttribute("patient", new Patient());
         return "add-patient";
     }
 
-    @PostMapping("/patients/add")
+    @PostMapping("/add")
     public String addPatient(@ModelAttribute Patient patient) {
         try {
-            restTemplate.postForObject(GATEWAY_URL + "/api/patient/patients", patient, Patient.class);
+            restTemplate.postForObject(gatewayUrl + "/api/patient/patients", patient, Patient.class);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/patients/add?error";
@@ -85,10 +107,10 @@ public class PatientController {
         return "redirect:/patients";
     }
 
-    @GetMapping("/patients/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String showEditPatientForm(@PathVariable("id") int id, Model model) {
         try {
-            Patient patient = restTemplate.getForObject(GATEWAY_URL + "/api/patient/patients/" + id, Patient.class);
+            Patient patient = restTemplate.getForObject(gatewayUrl + "/api/patient/patients/" + id, Patient.class);
             model.addAttribute("patient", patient);
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,17 +119,42 @@ public class PatientController {
         return "edit-patient";
     }
 
-    @PostMapping("/patients/edit/{id}")
+    @PostMapping("/edit/{id}")
     public String editPatient(@PathVariable("id") int id, @ModelAttribute Patient patient) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Patient> entity = new HttpEntity<>(patient, headers);
         try {
-            restTemplate.exchange(GATEWAY_URL + "/api/patient/patients/" + id, HttpMethod.PUT, entity, Void.class);
+            restTemplate.exchange(gatewayUrl + "/api/patient/patients/" + id, HttpMethod.PUT, entity, Void.class);
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/patients/edit/" + id + "?error";
         }
         return "redirect:/patients";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deletePatient(@PathVariable("id") int id) {
+        try {
+            String url = gatewayUrl + "/api/patient/patients/" + id;
+            restTemplate.delete(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/patients?deleteError";
+        }
+        return "redirect:/patients";
+    }
+
+    @PostMapping("/{patientId}/notes/delete/{noteId}")
+    public String deleteNote(@PathVariable("patientId") int patientId, @PathVariable("noteId") String noteId) {
+        try {
+            String url = gatewayUrl + "/api/notes/" + noteId;
+            restTemplate.delete(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/patients/" + patientId + "?noteDeleteError";
+        }
+        // On redirige vers la page du patient pour voir le résultat
+        return "redirect:/patients/" + patientId;
     }
 }

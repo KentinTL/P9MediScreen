@@ -12,7 +12,8 @@ public class Note {
 
     private String id;
     private Integer patientId;
-    private String note; // C'est le contenu de la note
+    private String patient;
+    private String note;
 
     /**
      * Méthode utilitaire pour extraire la date de création à partir de l'ID MongoDB.

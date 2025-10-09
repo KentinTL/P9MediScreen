@@ -49,6 +49,23 @@
     <p class="error">Le patient demandé n'a pas été trouvé.</p>
 </div>
 
+<h2>Évaluation du Risque de Diabète</h2>
+
+<div class="details-container">
+    <p>
+        <strong>Niveau de risque du patient :</strong>
+
+        <span th:if="${riskLevel}"
+              th:text="${riskLevel}"
+              th:style="${riskLevel == 'In Danger' || riskLevel == 'Early Onset' ? 'color: red; font-weight: bold;' : ''}">
+        </span>
+
+        <span th:if="${riskLevel == null}" class="error">
+            Non disponible
+        </span>
+    </p>
+</div>
+
 <h2>Historique des Notes</h2>
 
 <div class="notes-container" th:if="${!notes.isEmpty()}">
@@ -56,11 +73,21 @@
         <thead>
         <tr>
             <th>Note du Praticien</th>
+            <th style="width: 10%;">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="note : ${notes}">
             <td th:text="${note.note}"></td>
+            <td>
+                <form th:action="@{/patients/{patientId}/notes/delete/{noteId}(patientId=${patient.id}, noteId=${note.id})}" method="post" style="display:inline;">
+                    <button type="submit"
+                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette note ?')"
+                            style="background-color:#dc3545; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">
+                        Supprimer
+                    </button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -72,8 +99,8 @@
 
 <h2>Ajouter une nouvelle note</h2>
 <div class="add-note-container">
-    <form th:action="@{/patients/{id}/notes(id=${patient.id})}" th:object="${newNote}" method="post">
-        <textarea th:field="*{note}" rows="4" placeholder="Écrire une note..."></textarea>
+    <form th:action="@{/patients/{patientId}/notes(patientId=${patient.id})}" th:object="${newNote}" method="post">
+        <textarea th:field="*{note}" rows="4" placeholder="Écrire une note..." required></textarea>
         <button type="submit">Ajouter</button>
     </form>
 </div>

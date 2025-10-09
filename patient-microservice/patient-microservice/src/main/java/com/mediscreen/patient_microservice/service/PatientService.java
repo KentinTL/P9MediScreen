@@ -1,5 +1,6 @@
 package com.mediscreen.patient_microservice.service;
 
+import com.mediscreen.patient_microservice.exception.ResourceNotFoundException;
 import com.mediscreen.patient_microservice.model.Patient;
 import com.mediscreen.patient_microservice.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +28,21 @@ public class PatientService {
     }
 
     public Patient updatePatient(Long id, Patient patientDetails) {
-        Optional<Patient> optionalPatient = patientRepository.findById(id);
+        Patient existingPatient = patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient non trouvé avec l'id : " + id));
 
-        if (optionalPatient.isPresent()) {
-            Patient existingPatient = optionalPatient.get();
-            existingPatient.setFirstName(patientDetails.getFirstName());
-            existingPatient.setLastName(patientDetails.getLastName());
-            existingPatient.setBirthdate(patientDetails.getBirthdate());
-            existingPatient.setGender(patientDetails.getGender());
-            existingPatient.setAddress(patientDetails.getAddress());
-            existingPatient.setPhoneNumber(patientDetails.getPhoneNumber());
-            return patientRepository.save(existingPatient);
-        } else {
-            return null;
-        }
+        existingPatient.setFirstName(patientDetails.getFirstName());
+        existingPatient.setLastName(patientDetails.getLastName());
+        existingPatient.setBirthdate(patientDetails.getBirthdate());
+        existingPatient.setGender(patientDetails.getGender());
+        existingPatient.setAddress(patientDetails.getAddress());
+        existingPatient.setPhoneNumber(patientDetails.getPhoneNumber());
+
+        return patientRepository.save(existingPatient);
     }
 
     public void deletePatient(Long id) {
-        if(patientRepository.existsById(id)) {
+        if (patientRepository.existsById(id)) {
             patientRepository.deleteById(id);
         }
     }

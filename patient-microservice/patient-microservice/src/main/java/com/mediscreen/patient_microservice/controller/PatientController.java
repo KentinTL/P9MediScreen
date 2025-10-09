@@ -2,6 +2,7 @@ package com.mediscreen.patient_microservice.controller;
 
 import com.mediscreen.patient_microservice.model.Patient;
 import com.mediscreen.patient_microservice.service.PatientService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,19 +11,17 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/patient") // <-- AJOUTER CECI
+@RequestMapping("/api/patient")
 public class PatientController {
 
     @Autowired
     private PatientService patientService;
 
-    // GET /patients -> Voir tous les patients
     @GetMapping("/patients")
     public List<Patient> getAllPatients() {
         return patientService.getAllPatients();
     }
 
-    // GET /patients/{id} -> Voir un patient spécifique
     @GetMapping("/patients/{id}")
     public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
         Optional<Patient> patient = patientService.getPatientById(id);
@@ -30,15 +29,13 @@ public class PatientController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // POST /patients -> Ajouter un nouveau patient
     @PostMapping("/patients")
-    public Patient addPatient(@RequestBody Patient patient) {
+    public Patient addPatient(@Valid @RequestBody Patient patient) {
         return patientService.addPatient(patient);
     }
 
-    // PUT /patients/{id} -> Mettre à jour un patient
     @PutMapping("/patients/{id}")
-    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patientDetails) {
+    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @Valid @RequestBody Patient patientDetails) {
         Patient updatedPatient = patientService.updatePatient(id, patientDetails);
         if (updatedPatient != null) {
             return ResponseEntity.ok(updatedPatient);

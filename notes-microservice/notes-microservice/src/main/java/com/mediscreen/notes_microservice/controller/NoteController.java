@@ -2,6 +2,7 @@ package com.mediscreen.notes_microservice.controller;
 
 import com.mediscreen.notes_microservice.model.Note;
 import com.mediscreen.notes_microservice.service.NoteService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +15,18 @@ public class NoteController {
 
     private final NoteService noteService;
 
-    @GetMapping
-    public List<Note> getAllNotes() {
-        return noteService.getAllNotes();
-    }
-
     @GetMapping(params = "patientId")
     public List<Note> getNotesByPatient(@RequestParam Integer patientId) {
         return noteService.getNotesByPatientId(patientId);
     }
 
     @PostMapping
-    public Note createNote(@RequestBody Note note) {
+    public Note createNote(@Valid @RequestBody Note note) {
         return noteService.createNote(note);
     }
 
     @PutMapping("/{id}")
-    public Note updateNote(@PathVariable String id, @RequestBody Note note) {
+    public Note updateNote(@PathVariable String id, @Valid @RequestBody Note note) {
         return noteService.updateNote(id, note);
     }
 

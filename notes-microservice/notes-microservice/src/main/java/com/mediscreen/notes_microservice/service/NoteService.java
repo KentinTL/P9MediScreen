@@ -1,5 +1,6 @@
 package com.mediscreen.notes_microservice.service;
 
+import com.mediscreen.notes_microservice.exception.ResourceNotFoundException;
 import com.mediscreen.notes_microservice.model.Note;
 import com.mediscreen.notes_microservice.repository.NoteRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +14,6 @@ public class NoteService {
 
     private final NoteRepository noteRepository;
 
-    public List<Note> getAllNotes() {
-        return noteRepository.findAll();
-    }
-
     public List<Note> getNotesByPatientId(Integer patientId) {
         return noteRepository.findByPatientId(patientId);
     }
@@ -26,8 +23,13 @@ public class NoteService {
     }
 
     public Note updateNote(String id, Note note) {
-        note.setId(id);
-        return noteRepository.save(note);
+        Note existingNote = noteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Note non trouvée avec l'id : " + id));
+
+        existingNote.setPatient(note.getPatient());
+        existingNote.setNote(note.getNote());
+
+        return noteRepository.save(existingNote);
     }
 
     public void deleteNote(String id) {

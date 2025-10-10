@@ -30,7 +30,6 @@
             <th>Genre</th>
             <th>Adresse</th>
             <th>Téléphone</th>
-            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -43,15 +42,6 @@
             <td th:text="${patient.gender}"></td>
             <td th:text="${patient.address}"></td>
             <td th:text="${patient.phoneNumber}"></td>
-            <td>
-                <form th:action="@{/patients/delete/{id}(id=${patient.id})}" method="post" style="display:inline;">
-                    <button type="submit"
-                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce patient ? Cette action est irréversible.')"
-                            style="background-color:#dc3545; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">
-                        Supprimer
-                    </button>
-                </form>
-            </td>
         </tr>
         </tbody>
     </table>

@@ -165,6 +165,39 @@ mvn spring-boot:run
 
 ---
 
+---
+
+## ♻️ Green Code Recommendations
+
+Software ecodesign, or "Green Code," aims to develop applications that minimize their resource consumption (CPU, RAM, network, storage) to reduce their overall energy footprint.
+
+For the Mediscreen project, several concrete actions could be implemented to align the architecture with these principles.
+
+### 1. Architecture and Deployment Optimization
+
+-   **Optimize Docker Images:**
+    -   Use minimalist base images like `alpine` for the JRE. For example, `eclipse-temurin:17-jre-alpine` is significantly lighter than the standard image.
+    -   Implement **multi-stage builds** in each `Dockerfile`. This allows the code to be compiled in a heavy image (containing Maven and the full JDK) and then copies only the final `.jar` artifact into a lightweight runtime image. The reduction in final image size is often over 50%, which decreases storage space and network consumption during deployments.
+
+-   **Adapt Infrastructure in Production:**
+    -   In a production environment, use an orchestrator like **Kubernetes** to implement **auto-scaling**. Services like `assessment-service` could then be scaled to zero when not in use and the number of instances could dynamically adjust to the load, avoiding unnecessary resource consumption.
+
+### 2. Backend and Data Optimization
+
+-   **Strategic Caching:**
+    -   The `assessment-service` systematically calls the `patient-service` and `notes-service`. A patient's core data (age, gender) rarely changes. Implementing a cache (with **Redis** or **Caffeine**) would allow for temporary storage of this information, drastically reducing the number of network calls and the load on other services.
+
+-   **Query Optimization:**
+    -   **Pagination:** The page listing all patients (`/patients`) could eventually become very slow if the clinic has thousands of patients. Implementing pagination in the `patient-service` and `frontend-service` would ensure that only the data visible on the screen is loaded, saving memory, CPU, and bandwidth.
+    -   **Indexing:** Ensure that frequently queried fields in the databases (like `patientId` in MongoDB) are properly **indexed** to prevent full collection scans, which are very resource-intensive.
+
+### 3. Frontend Frugality
+
+-   **Resource Optimization:**
+    -   Compress and minify static resources like CSS and JavaScript files to reduce their size and speed up load times for the user, thereby decreasing bandwidth consumption.
+-   **Limiting API Calls:**
+    -   Ensure the user interface only makes the API calls that are strictly necessary to render a view. For example, the patient list should only fetch the data required for the table (name, date of birth), not the complete medical history for every patient in the list.
+
 ## 👨‍💻 Author
 
 **Kentin T.**  

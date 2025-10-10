@@ -35,13 +35,17 @@ public class DiabetesAssessmentService {
 
         long triggerCount = countTriggersInNotes(notes);
 
+        if(patientId == 7) {
+            System.out.println(patientId + " => " + triggerCount + " / " + age);
+        }
+
         if (isEarlyOnset(patient, age, triggerCount)) {
             return "Early Onset";
         }
-        if (isInDanger(patient, age, triggerCount)) {
+        else if (isInDanger(patient, age, triggerCount)) {
             return "In Danger";
         }
-        if (isBorderline(age, triggerCount)) {
+        else if (isBorderline(age, triggerCount)) {
             return "Borderline";
         }
 
@@ -49,9 +53,10 @@ public class DiabetesAssessmentService {
     }
 
     private long countTriggersInNotes(List<NoteDTO> notes) {
-        if (notes == null || notes.isEmpty()) {
+        if (notes.isEmpty()) {
             return 0;
         }
+
         return notes.stream()
                 .map(note -> note.getNote().toLowerCase())
                 .flatMap(noteText -> TRIGGERS.stream().filter(noteText::contains))
@@ -67,9 +72,12 @@ public class DiabetesAssessmentService {
         boolean isMale = "M".equalsIgnoreCase(patient.getGender());
         boolean isFemale = "F".equalsIgnoreCase(patient.getGender());
 
-        if (isMale && age < 30 && triggerCount == 3) return true;
-        if (isFemale && age < 30 && triggerCount == 4) return true;
-        if (age > 30 && (triggerCount == 6 || triggerCount == 7)) return true;
+        if(age < 30) {
+            return isMale && triggerCount == 3 || isFemale && triggerCount == 4;
+        }
+        else if(age > 30) {
+            return triggerCount == 6 || triggerCount == 7;
+        }
 
         return false;
     }
@@ -78,9 +86,12 @@ public class DiabetesAssessmentService {
         boolean isMale = "M".equalsIgnoreCase(patient.getGender());
         boolean isFemale = "F".equalsIgnoreCase(patient.getGender());
 
-        if (isMale && age < 30 && triggerCount >= 5) return true;
-        if (isFemale && age < 30 && triggerCount >= 7) return true;
-        if (age > 30 && triggerCount >= 8) return true;
+        if(age < 30) {
+            return isMale && triggerCount >= 5 || isFemale && triggerCount >= 7;
+        }
+        else if(age > 30) {
+            return triggerCount >= 8;
+        }
 
         return false;
     }

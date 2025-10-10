@@ -12,6 +12,11 @@ services:
       - MYSQL_DATABASE=mediscreen_patient_db
     volumes:
       - patient_db_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", 'mysqladmin -u root -password=$$MYSQL_ROOT_PASSWORD ping' ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
 
   # MongoDB
   notes-db:
@@ -34,7 +39,8 @@ services:
       - spring.datasource.username=root
       - spring.datasource.password=root_password
     depends_on:
-      - patient-db
+      patient-db:
+        condition: service_healthy
 
   # Microservice Notes
   notes-service:

@@ -1,9 +1,13 @@
 package com.mediscreen.notes_microservice.service;
 
+import com.mediscreen.notes_microservice.client.PatientClient;
+import com.mediscreen.notes_microservice.exception.PatientNotFoundException;
 import com.mediscreen.notes_microservice.exception.ResourceNotFoundException;
 import com.mediscreen.notes_microservice.model.Note;
 import com.mediscreen.notes_microservice.repository.NoteRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +18,19 @@ public class NoteService {
 
     private final NoteRepository noteRepository;
 
+    @Autowired
+    private PatientClient patientClient;
+
     public List<Note> getNotesByPatientId(Integer patientId) {
         return noteRepository.findByPatientId(patientId);
     }
 
     public Note createNote(Note note) {
+        try {
+            patientClient.checkPatientExists(note.getPatientId());
+        } catch (FeignException.NotFound e) {
+            throw new PatientNotFoundException("Patient with ID " + note.getPatientId() + " does not exist.");
+        }
         return noteRepository.save(note);
     }
 

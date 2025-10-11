@@ -4,6 +4,7 @@ import com.mediscreen.notes_microservice.model.Note;
 import com.mediscreen.notes_microservice.service.NoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class NoteController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Note createNote(@Valid @RequestBody Note note) {
         return noteService.createNote(note);
     }

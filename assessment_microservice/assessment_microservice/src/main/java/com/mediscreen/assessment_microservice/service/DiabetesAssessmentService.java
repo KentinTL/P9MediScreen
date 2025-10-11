@@ -49,7 +49,11 @@ public class DiabetesAssessmentService {
             return "Borderline";
         }
 
-        return "None";
+        if (triggerCount == 0) {
+            return "None";
+        }
+
+        return "Not Applicable";
     }
 
     private long countTriggersInNotes(List<NoteDTO> notes) {
